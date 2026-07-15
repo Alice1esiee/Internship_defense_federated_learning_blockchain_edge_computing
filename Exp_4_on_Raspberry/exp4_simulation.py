@@ -23,7 +23,7 @@ RESULTS_DIR.mkdir(exist_ok=True)
 NUM_CLIENTS       = 3
 NUM_ROUNDS        = 2
 LOCAL_EPOCHS      = 1
-BATCH_SIZE        = 16
+BATCH_SIZE        = 8
 LR                = 0.01
 MOMENTUM          = 0.9
 NUM_CLASSES       = 10
@@ -341,11 +341,11 @@ def main():
     train_images, train_labels, test_images, test_labels = load_cifar10()
 
     # Réduire pour RPi 3 (mémoire limitée)
-    train_images = train_images[:10000]
-    train_labels = train_labels[:10000]
-    test_images  = test_images[:2000]
-    test_labels  = test_labels[:2000]
-    
+    train_images = train_images[:5000]
+    train_labels = train_labels[:5000]
+    test_images  = test_images[:1000]
+    test_labels  = test_labels[:1000]
+
     all_results = []
 
     for alpha in ALPHAS:
