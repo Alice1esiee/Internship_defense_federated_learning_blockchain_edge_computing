@@ -61,11 +61,13 @@ def load_cifar10(data_dir="./data"):
     # Données de test
     test_images, test_labels = _load_batch(os.path.join(dest, "test_batch"))
 
-    # Normalisation channel-wise
+    # Normalisation channel-wise (par batch pour économiser la RAM)
     mean = CIFAR10_MEAN.reshape(1, 3, 1, 1)
     std  = CIFAR10_STD.reshape(1, 3, 1, 1)
-    train_images = (train_images - mean) / std
-    test_images  = (test_images  - mean) / std
+    train_images -= mean
+    train_images /= std
+    test_images -= mean
+    test_images /= std
 
     print(f"Train : {len(train_images)} exemples | Test : {len(test_images)} exemples")
     return train_images, train_labels, test_images, test_labels
