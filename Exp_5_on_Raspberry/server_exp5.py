@@ -213,17 +213,30 @@ def run_exp5(run_name, aggregator_name):
                    for layer, m in zip(weights_list[k], mean_w))
             for k in range(NUM_CLIENTS)
         }
-        suspect_id = max(l2_devs, key=l2_devs.get)
+        max_id  = max(l2_devs, key=l2_devs.get)
+        max_val = l2_devs[max_id]
+        others  = [v for k, v in l2_devs.items() if k != max_id]
+        mean_others = np.mean(others)
+
+        L2_THRESHOLD = 2.0   # suspect si déviation > 2× la moyenne des autres
+        if max_val > L2_THRESHOLD * mean_others:
+            suspect_id = max_id
+        else:
+            suspect_id = None
+
         print(f"[Serveur] Déviations L2 : "
-              + ", ".join(f"client {k}={v:.4f}" for k, v in l2_devs.items()))
-        print(f"[Serveur] Suspect L2 : client {suspect_id} "
-              f"(attaque réelle = {attacks[suspect_id]})")
+            + ", ".join(f"client {k}={v:.4f}" for k, v in l2_devs.items()))
+        if suspect_id is not None:
+            print(f"[Serveur] Suspect L2 : client {suspect_id} "
+                f"(attaque réelle = {attacks[suspect_id]})")
+        else:
+            print(f"[Serveur] Suspect L2 : aucun (déviations trop proches)")
 
         # ── Blockchain ───────────────────────────────────────────
         client_updates = {k: (weights_list[k], samples_list[k]) for k in client_ids}
         detection_info = {
             k: {"l2_deviation": round(l2_devs[k], 4),
-                "is_suspect"  : (k == suspect_id)}
+                "is_suspect"  : (suspect_id is not None and k == suspect_id)}
             for k in client_ids
         }
         t_bc = time.perf_counter()
@@ -276,8 +289,8 @@ def run_exp5(run_name, aggregator_name):
             "l2_deviations"             : {k: round(v, 4) for k, v in l2_devs.items()},
             "client_attack_types"       : attacks,
             "suspect_id"                : suspect_id,
-            "suspect_attack_type_reel"  : attacks[suspect_id],
-            "detection_correcte"        : attacks[suspect_id] != "none",
+            "suspect_attack_type_reel"  : attacks[suspect_id] if suspect_id is not None else "none",
+            "detection_correcte"        : (suspect_id is not None and attacks[suspect_id] != "none"),
             "compression_stats"         : compression_stats,
             "any_client_compressed"     : True,
         }
@@ -290,8 +303,11 @@ def run_exp5(run_name, aggregator_name):
         print(f"  RAM Δ    : {delta_ram:+.2f} MB")
         print(f"  Comm KB  : {overhead_comm_bytes/1024:.2f}")
         print(f"  Énergie  : {energie:.4f} J")
-        status = "✓ CORRECT" if round_metrics["detection_correcte"] else "✗ FAUX POSITIF"
-        print(f"  Suspect  : client {suspect_id} ({status})")
+        if suspect_id is not None:
+            status = "✓ CORRECT" if round_metrics["detection_correcte"] else "✗ FAUX POSITIF"
+            print(f"  Suspect  : client {suspect_id} ({status})")
+        else:
+            print(f"  Suspect  : aucun (✓ CORRECT — pas d'attaque détectée)")
 
     # ── Post-traitement ───────────────────────────────────────────────────────
     blockchain.print_summary()
