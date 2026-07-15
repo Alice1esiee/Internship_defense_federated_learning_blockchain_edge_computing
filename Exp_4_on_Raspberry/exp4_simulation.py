@@ -340,6 +340,12 @@ def main():
     print("Chargement de CIFAR-10...")
     train_images, train_labels, test_images, test_labels = load_cifar10()
 
+    # Réduire pour RPi 3 (mémoire limitée)
+    train_images = train_images[:10000]
+    train_labels = train_labels[:10000]
+    test_images  = test_images[:2000]
+    test_labels  = test_labels[:2000]
+    
     all_results = []
 
     for alpha in ALPHAS:
