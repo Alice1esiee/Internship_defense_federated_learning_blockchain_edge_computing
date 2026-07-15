@@ -21,9 +21,9 @@ RESULTS_DIR = Path("results_exp4")
 RESULTS_DIR.mkdir(exist_ok=True)
 
 NUM_CLIENTS       = 3
-NUM_ROUNDS        = 3
+NUM_ROUNDS        = 2
 LOCAL_EPOCHS      = 1
-BATCH_SIZE        = 32
+BATCH_SIZE        = 16
 LR                = 0.01
 MOMENTUM          = 0.9
 NUM_CLASSES       = 10
@@ -137,18 +137,18 @@ class SimpleCNN:
 
     def __init__(self, num_classes=10, seed=0):
         rng = np.random.default_rng(seed)
-        # Conv 1 : (32, 3, 3, 3)
-        self.W1 = (rng.standard_normal((32, 3, 3, 3)) * np.sqrt(2/27)).astype(np.float32)
-        self.b1 = np.zeros(32, dtype=np.float32)
-        # Conv 2 : (64, 32, 3, 3)
-        self.W2 = (rng.standard_normal((64, 32, 3, 3)) * np.sqrt(2/288)).astype(np.float32)
-        self.b2 = np.zeros(64, dtype=np.float32)
-        # Linear 1 : (64*8*8, 256)
-        self.W3 = (rng.standard_normal((64*8*8, 256)) * np.sqrt(2/(64*8*8))).astype(np.float32)
-        self.b3 = np.zeros(256, dtype=np.float32)
-        # Linear 2 : (256, 10)
-        self.W4 = (rng.standard_normal((256, num_classes)) * np.sqrt(2/256)).astype(np.float32)
-        self.b4 = np.zeros(num_classes, dtype=np.float32)
+        # Conv 1 : (16, 3, 3, 3) au lieu de (32, 3, 3, 3)
+        self.W1 = (rng.standard_normal((16, 3, 3, 3)) * np.sqrt(2/27)).astype(np.float32)
+        self.b1 = np.zeros(16, dtype=np.float32)
+        # Conv 2 : (32, 16, 3, 3) au lieu de (64, 32, 3, 3)
+        self.W2 = (rng.standard_normal((32, 16, 3, 3)) * np.sqrt(2/288)).astype(np.float32)
+        self.b2 = np.zeros(32, dtype=np.float32)
+        # Linear 1 : (32*8*8, 128) au lieu de (64*8*8, 256)
+        self.W3 = (rng.standard_normal((32*8*8, 128)) * np.sqrt(2/(32*8*8))).astype(np.float32)
+        self.b3 = np.zeros(128, dtype=np.float32)
+        # Linear 2 : (128, 10)
+        self.W4 = (rng.standard_normal((128, NUM_CLASSES)) * np.sqrt(2/128)).astype(np.float32)
+        self.b4 = np.zeros(NUM_CLASSES, dtype=np.float32)
 
         # Momentum SGD
         self._init_velocity()
