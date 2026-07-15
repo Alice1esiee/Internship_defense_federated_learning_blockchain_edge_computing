@@ -134,92 +134,59 @@ class SimpleCNN:
                 → Linear(256→10)
     Entrée : (N, 3, 32, 32)
     """
-
     def __init__(self, num_classes=10, seed=0):
         rng = np.random.default_rng(seed)
-        # Conv 1 : (16, 3, 3, 3) au lieu de (32, 3, 3, 3)
-        self.W1 = (rng.standard_normal((16, 3, 3, 3)) * np.sqrt(2/27)).astype(np.float32)
-        self.b1 = np.zeros(16, dtype=np.float32)
-        # Conv 2 : (32, 16, 3, 3) au lieu de (64, 32, 3, 3)
-        self.W2 = (rng.standard_normal((32, 16, 3, 3)) * np.sqrt(2/288)).astype(np.float32)
-        self.b2 = np.zeros(32, dtype=np.float32)
-        # Linear 1 : (32*8*8, 128) au lieu de (64*8*8, 256)
-        self.W3 = (rng.standard_normal((32*8*8, 128)) * np.sqrt(2/(32*8*8))).astype(np.float32)
-        self.b3 = np.zeros(128, dtype=np.float32)
-        # Linear 2 : (128, 10)
-        self.W4 = (rng.standard_normal((128, NUM_CLASSES)) * np.sqrt(2/128)).astype(np.float32)
-        self.b4 = np.zeros(NUM_CLASSES, dtype=np.float32)
-
-        # Momentum SGD
-        self._init_velocity()
+        # Réseau dense : 3072 → 128 → 64 → 10
+        self.W1 = (rng.standard_normal((3072, 128)) * np.sqrt(2/3072)).astype(np.float32)
+        self.b1 = np.zeros(128, dtype=np.float32)
+        self.W2 = (rng.standard_normal((128, 64)) * np.sqrt(2/128)).astype(np.float32)
+        self.b2 = np.zeros(64, dtype=np.float32)
+        self.W3 = (rng.standard_normal((64, num_classes)) * np.sqrt(2/64)).astype(np.float32)
+        self.b3 = np.zeros(num_classes, dtype=np.float32)
         self._cache = {}
+        self._init_velocity()
 
     def _init_velocity(self):
         self.v = {k: np.zeros_like(v) for k, v in self.get_weights_dict().items()}
 
     def get_weights_dict(self):
-        return {"W1":self.W1,"b1":self.b1,"W2":self.W2,"b2":self.b2,
-                "W3":self.W3,"b3":self.b3,"W4":self.W4,"b4":self.b4}
+        return {"W1":self.W1,"b1":self.b1,"W2":self.W2,"b2":self.b2,"W3":self.W3,"b3":self.b3}
 
     def get_weights(self):
-        """Retourne les poids comme liste de ndarrays (même ordre que set_weights)."""
         return [self.W1.copy(), self.b1.copy(),
                 self.W2.copy(), self.b2.copy(),
-                self.W3.copy(), self.b3.copy(),
-                self.W4.copy(), self.b4.copy()]
+                self.W3.copy(), self.b3.copy()]
 
     def set_weights(self, weights):
-        self.W1, self.b1, self.W2, self.b2, \
-        self.W3, self.b3, self.W4, self.b4 = [w.copy() for w in weights]
+        self.W1, self.b1, self.W2, self.b2, self.W3, self.b3 = [w.copy() for w in weights]
         self._init_velocity()
 
     def forward(self, x, store=True):
-        # Conv 1
-        c1 = conv2d_forward(x, self.W1, self.b1, pad=1)
-        r1 = relu(c1)
-        p1, m1 = maxpool2d_forward(r1, size=2)   # (N,32,16,16)
-        # Conv 2
-        c2 = conv2d_forward(p1, self.W2, self.b2, pad=1)
-        r2 = relu(c2)
-        p2, m2 = maxpool2d_forward(r2, size=2)   # (N,64,8,8)
-        # Flatten
-        flat = p2.reshape(p2.shape[0], -1)        # (N, 4096)
-        # Linear 1
-        l3 = flat @ self.W3 + self.b3
-        r3 = relu(l3)
-        # Linear 2
-        l4 = r3 @ self.W4 + self.b4
-        probs = softmax(l4)
-
+        x_flat = x.reshape(x.shape[0], -1)  # (N, 3072)
+        z1 = x_flat @ self.W1 + self.b1
+        a1 = relu(z1)
+        z2 = a1 @ self.W2 + self.b2
+        a2 = relu(z2)
+        z3 = a2 @ self.W3 + self.b3
+        probs = softmax(z3)
         if store:
-            self._cache = dict(x=x, c1=c1, r1=r1, p1=p1, m1=m1,
-                               c2=c2, r2=r2, p2=p2, m2=m2, flat=flat,
-                               l3=l3, r3=r3, l4=l4)
+            self._cache = dict(x_flat=x_flat, z1=z1, a1=a1, z2=z2, a2=a2, z3=z3)
         return probs
 
     def backward(self, probs, labels):
         c = self._cache
-        # Grad sortie
-        dl4 = cross_entropy_grad(probs, labels)
-        gW4 = c["r3"].T @ dl4
-        gb4 = dl4.sum(axis=0)
-        dr3 = dl4 @ self.W4.T
-        dl3 = dr3 * relu_back(c["l3"])
-        gW3 = c["flat"].T @ dl3
-        gb3 = dl3.sum(axis=0)
-        # Vers conv2
-        dflat = dl3 @ self.W3.T
-        dp2 = dflat.reshape(c["p2"].shape)
-        dr2 = maxpool2d_backward(dp2, c["m2"])
-        dc2 = dr2 * relu_back(c["c2"])
-        dp1, gW2, gb2 = conv2d_backward(c["p1"], self.W2, dc2, pad=1)
-        # Vers conv1
-        dr1 = maxpool2d_backward(dp1, c["m1"])
-        dc1 = dr1 * relu_back(c["c1"])
-        _, gW1, gb1 = conv2d_backward(c["x"], self.W1, dc1, pad=1)
-
-        return {"W1":gW1,"b1":gb1,"W2":gW2,"b2":gb2,
-                "W3":gW3,"b3":gb3,"W4":gW4,"b4":gb4}
+        dz3 = cross_entropy_grad(probs, labels)
+        gW3 = c["a2"].T @ dz3
+        gb3 = dz3.sum(axis=0)
+        da2 = dz3 @ self.W3.T
+        dz2 = da2 * relu_back(c["z2"])
+        gW2 = c["a1"].T @ dz2
+        gb2 = dz2.sum(axis=0)
+        da1 = dz2 @ self.W2.T
+        dz1 = da1 * relu_back(c["z1"])
+        gW1 = c["x_flat"].T @ dz1
+        gb1 = dz1.sum(axis=0)
+        return {"W1":gW1,"b1":gb1,"W2":gW2,"b2":gb2,"W3":gW3,"b3":gb3}
 
     def sgd_step(self, grads, lr, momentum=0.9):
         for k in grads:
