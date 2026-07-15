@@ -193,7 +193,7 @@ class SimpleCNN:
 
         if store:
             self._cache = dict(x=x, c1=c1, r1=r1, p1=p1, m1=m1,
-                               c2=c2, r2=r2, p2=p2, flat=flat,
+                               c2=c2, r2=r2, p2=p2, m2=m2, flat=flat,
                                l3=l3, r3=r3, l4=l4)
         return probs
 
