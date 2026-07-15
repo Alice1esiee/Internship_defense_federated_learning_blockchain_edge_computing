@@ -290,8 +290,7 @@ def run_exp5(run_name, aggregator_name):
             "client_attack_types"       : attacks,
             "suspect_id"                : suspect_id,
             "suspect_attack_type_reel"  : attacks[suspect_id] if suspect_id is not None else "none",
-            "detection_correcte"        : (suspect_id is not None and attacks[suspect_id] != "none"),
-            "compression_stats"         : compression_stats,
+            "detection_correcte"        : (suspect_id is None and all(a == "none" for a in attacks.values())) or (suspect_id is not None and attacks[suspect_id] != "none"),            "compression_stats"         : compression_stats,
             "any_client_compressed"     : True,
         }
         results_list.append(round_metrics)
