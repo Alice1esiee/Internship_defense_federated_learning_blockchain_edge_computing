@@ -27,11 +27,11 @@ from compression  import (compress_weights, decompress_weights,
 from exp5_data    import load_mnist, get_client_data
 from exp5_model   import MNISTModel
 
-# ── Paramètres (identiques à l'original) ─────────────────────────────────────
+# ── Paramètres  ─────────────────────────────────────
 NUM_ROUNDS  = 5
 NUM_CLIENTS = 3
 F_BYZANTINE = 1
-TRIM        = 0
+TRIM        = 1
 BATCH_SIZE  = 32
 LR          = 0.01
 MOMENTUM    = 0.9
@@ -218,7 +218,7 @@ def run_exp5(run_name, aggregator_name):
         others  = [v for k, v in l2_devs.items() if k != max_id]
         mean_others = np.mean(others)
 
-        L2_THRESHOLD = 2.0   # suspect si déviation > 2× la moyenne des autres
+        L2_THRESHOLD = 1.5   # suspect si déviation > 1.5× la moyenne des autres
         if max_val > L2_THRESHOLD * mean_others:
             suspect_id = max_id
         else:
