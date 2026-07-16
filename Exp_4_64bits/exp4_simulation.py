@@ -5,6 +5,7 @@ Compare FedAvg vs Krum vs Trimmed Mean sur CIFAR-10 non-IID (Dirichlet).
 Résultats sauvegardés dans results_exp4/
 """
 
+import argparse
 import json
 import os
 import time
@@ -229,6 +230,14 @@ def run_simulation(alpha, num_byzantine, aggregator, device,
     return results
 
 def main():
+    # Ajout du bloc pour lire l'argument dans le terminal
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--alpha', type=float, help="Valeur de l'alpha (0.1, 0.5 ou 1.0)")
+    args = parser.parse_args()
+
+    # Si tu as précisé un alpha, on l'utilise, sinon on garde la liste complète par défaut
+    alphas_to_run = [args.alpha] if args.alpha else ALPHAS
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Device : {device}", flush=True)
 
@@ -237,7 +246,8 @@ def main():
 
     all_results = []
 
-    for alpha in ALPHAS:
+    # On utilise alphas_to_run ici au lieu de ALPHAS
+    for alpha in alphas_to_run:
         for num_byz in BYZANTINE_FRACTIONS:
             for agg in AGGREGATORS:
                 tag = f"alpha{alpha}_byz{num_byz}_{agg}"
@@ -257,7 +267,9 @@ def main():
                     json.dump(result, f, indent=2)
                 print(f"  → Sauvegardé : {out_path}", flush=True)
 
-    global_path = RESULTS_DIR / "exp4_all_results.json"
+    # Modification du nom du fichier global pour savoir de quel alpha il s'agit
+    nom_fichier = f"exp4_all_results_alpha{args.alpha if args.alpha else 'ALL'}.json"
+    global_path = RESULTS_DIR / nom_fichier
     with open(global_path, "w") as f:
         json.dump(all_results, f, indent=2)
     print(f"\n✓ Résultats complets : {global_path}", flush=True)
