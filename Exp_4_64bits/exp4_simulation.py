@@ -15,7 +15,6 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import DataLoader, TensorDataset
 
 from aggregators import krum, trimmed_mean
 
@@ -36,41 +35,44 @@ SEED = 42
 CIFAR10_MEAN = np.array([0.4914, 0.4822, 0.4465], dtype=np.float32)
 CIFAR10_STD  = np.array([0.2470, 0.2435, 0.2616], dtype=np.float32)
 
-import pickle, tarfile, urllib.request
-
-def _load_batch(path):
-    with open(path, "rb") as f:
-        d = pickle.load(f, encoding="bytes")
-    images = d[b"data"].reshape(-1, 3, 32, 32).astype(np.float32) / 255.0
-    labels = np.array(d[b"labels"], dtype=np.int64)
-    return images, labels
+import pickle
 
 def load_cifar10(data_dir="./data"):
     dest = os.path.join(data_dir, "cifar-10-batches-py")
+    print(f"[DEBUG] Dossier CIFAR-10 : {dest}", flush=True)
+
     if not os.path.isdir(dest):
-        os.makedirs(data_dir, exist_ok=True)
-        archive = os.path.join(data_dir, "cifar-10-python.tar.gz")
-        if not os.path.exists(archive):
-            print("Téléchargement CIFAR-10...")
-            urllib.request.urlretrieve("https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz", archive)
-        with tarfile.open(archive, "r:gz") as tar:
-            tar.extractall(data_dir)
+        raise FileNotFoundError(dest)
 
-    train_images, train_labels = [], []
+    train_images = np.empty((50000, 3, 32, 32), dtype=np.float16)
+    train_labels = np.empty(50000, dtype=np.int64)
+
     for i in range(1, 6):
-        imgs, lbls = _load_batch(os.path.join(dest, f"data_batch_{i}"))
-        train_images.append(imgs)
-        train_labels.append(lbls)
-    train_images = np.concatenate(train_images, axis=0)
-    train_labels = np.concatenate(train_labels, axis=0)
-    test_images, test_labels = _load_batch(os.path.join(dest, "test_batch"))
+        path = os.path.join(dest, f"data_batch_{i}")
+        print(f"  [DEBUG] Lecture batch {i}...", flush=True)
+        with open(path, "rb") as f:
+            d = pickle.load(f, encoding="latin1")
+        imgs = d["data"].reshape(-1, 3, 32, 32).astype(np.float32) / 255.0
+        mean = CIFAR10_MEAN.reshape(1, 3, 1, 1)
+        std  = CIFAR10_STD.reshape(1, 3, 1, 1)
+        imgs = ((imgs - mean) / std).astype(np.float16)
+        start = (i - 1) * 10000
+        train_images[start:start+10000] = imgs
+        train_labels[start:start+10000] = np.array(d["labels"], dtype=np.int64)
+        del imgs, d
+        print(f"  [DEBUG] OK — batch {i} écrit en mémoire", flush=True)
 
+    print("[DEBUG] Lecture test batch...", flush=True)
+    with open(os.path.join(dest, "test_batch"), "rb") as f:
+        d = pickle.load(f, encoding="latin1")
+    test_images = d["data"].reshape(-1, 3, 32, 32).astype(np.float32) / 255.0
     mean = CIFAR10_MEAN.reshape(1, 3, 1, 1)
     std  = CIFAR10_STD.reshape(1, 3, 1, 1)
-    train_images = (train_images - mean) / std
-    test_images  = (test_images  - mean) / std
+    test_images = ((test_images - mean) / std).astype(np.float16)
+    test_labels = np.array(d["labels"], dtype=np.int64)
+    del d
 
-    print(f"Train : {len(train_images)} | Test : {len(test_images)}")
+    print(f"[DEBUG] CIFAR-10 chargé — Train : {len(train_images)} | Test : {len(test_images)}", flush=True)
     return train_images, train_labels, test_images, test_labels
 
 def dirichlet_partition(train_labels, num_clients, alpha, seed=42):
@@ -92,12 +94,6 @@ def dirichlet_partition(train_labels, num_clients, alpha, seed=42):
     for k in range(num_clients):
         rng.shuffle(client_indices[k])
     return client_indices
-
-def make_loader(images, labels, batch_size, shuffle=True):
-    t_images = torch.tensor(images, dtype=torch.float32)
-    t_labels = torch.tensor(labels, dtype=torch.long)
-    dataset = TensorDataset(t_images, t_labels)
-    return DataLoader(dataset, batch_size=batch_size, shuffle=shuffle)
 
 class SimpleCNN(nn.Module):
     def __init__(self, num_classes=10):
@@ -129,14 +125,18 @@ def fedavg(weights_list):
         result.append(np.mean(np.stack(layers, axis=0), axis=0))
     return result
 
-def local_train(model, loader, epochs, lr, device, is_byzantine=False):
+def local_train(model, images, labels, epochs, lr, device, is_byzantine=False):
     model = copy.deepcopy(model).to(device)
     optimizer = optim.SGD(model.parameters(), lr=lr, momentum=0.9)
     criterion = nn.CrossEntropyLoss()
     model.train()
+    n = len(labels)
     for _ in range(epochs):
-        for x, y in loader:
-            x = x.to(device)
+        indices = np.random.permutation(n)
+        for start in range(0, n, BATCH_SIZE):
+            batch_idx = indices[start:start+BATCH_SIZE]
+            x = torch.from_numpy(np.ascontiguousarray(images[batch_idx], dtype=np.float32)).to(device)
+            y = torch.tensor(labels[batch_idx], dtype=torch.long)
             if is_byzantine:
                 y = (NUM_CLASSES - 1 - y)
             y = y.to(device)
@@ -144,17 +144,20 @@ def local_train(model, loader, epochs, lr, device, is_byzantine=False):
             loss = criterion(model(x), y)
             loss.backward()
             optimizer.step()
+            del x, y
     return get_model_weights(model)
 
-def evaluate(model, loader, device):
+def evaluate(model, test_images, test_labels, device):
     model.eval()
     correct = total = 0
     with torch.no_grad():
-        for x, y in loader:
-            x, y = x.to(device), y.to(device)
+        for start in range(0, len(test_labels), 256):
+            x = torch.from_numpy(np.ascontiguousarray(test_images[start:start+256], dtype=np.float32)).to(device)
+            y = torch.tensor(test_labels[start:start+256], dtype=torch.long).to(device)
             preds = model(x).argmax(dim=1)
             correct += (preds == y).sum().item()
             total += y.size(0)
+            del x, y
     return 100.0 * correct / total
 
 def aggregate(weights_list, aggregator, f_byzantine):
@@ -173,15 +176,8 @@ def run_simulation(alpha, num_byzantine, aggregator, device,
     torch.manual_seed(SEED)
     np.random.seed(SEED)
 
+    print(f"  [DEBUG] Partition Dirichlet alpha={alpha}...", flush=True)
     client_indices = dirichlet_partition(train_labels, NUM_CLIENTS, alpha, seed=SEED)
-
-    client_loaders = []
-    for idx in client_indices:
-        imgs = train_images[idx]
-        lbls = train_labels[idx]
-        client_loaders.append(make_loader(imgs, lbls, BATCH_SIZE))
-
-    test_loader = make_loader(test_images, test_labels, 256, shuffle=False)
 
     stats = {}
     for k, indices in enumerate(client_indices):
@@ -204,12 +200,15 @@ def run_simulation(alpha, num_byzantine, aggregator, device,
     }
 
     for rnd in range(1, NUM_ROUNDS + 1):
+        print(f"  [DEBUG] Round {rnd}...", flush=True)
         t_start = time.time()
         all_weights = []
         for k in range(NUM_CLIENTS):
             is_byzantine = (k < num_byzantine)
+            idx = np.array(client_indices[k])
             weights = local_train(
-                global_model, client_loaders[k],
+                global_model,
+                train_images[idx], train_labels[idx],
                 LOCAL_EPOCHS, LR, device, is_byzantine
             )
             all_weights.append(weights)
@@ -217,7 +216,7 @@ def run_simulation(alpha, num_byzantine, aggregator, device,
         agg_weights = aggregate(all_weights, aggregator, num_byzantine)
         set_model_weights(global_model, agg_weights)
 
-        acc = evaluate(global_model, test_loader, device)
+        acc = evaluate(global_model, test_images, test_labels, device)
         elapsed = time.time() - t_start
 
         results["rounds"].append({
@@ -225,16 +224,15 @@ def run_simulation(alpha, num_byzantine, aggregator, device,
             "accuracy": round(acc, 3),
             "time_sec": round(elapsed, 3),
         })
-        print(f"  [Round {rnd:02d}] acc={acc:.2f}%  ({elapsed:.1f}s)")
+        print(f"  [Round {rnd:02d}] acc={acc:.2f}%  ({elapsed:.1f}s)", flush=True)
 
     return results
 
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"Device : {device}")
+    print(f"Device : {device}", flush=True)
 
-    # ── Chargement UNIQUE de CIFAR-10 ──────────────────────────
-    print("Chargement CIFAR-10 (une seule fois)...")
+    print("Chargement CIFAR-10 (une seule fois)...", flush=True)
     train_images, train_labels, test_images, test_labels = load_cifar10()
 
     all_results = []
@@ -243,9 +241,9 @@ def main():
         for num_byz in BYZANTINE_FRACTIONS:
             for agg in AGGREGATORS:
                 tag = f"alpha{alpha}_byz{num_byz}_{agg}"
-                print(f"\n{'='*60}")
-                print(f"  alpha={alpha}  |  byzantins={num_byz}  |  agrégateur={agg}")
-                print(f"{'='*60}")
+                print(f"\n{'='*60}", flush=True)
+                print(f"  alpha={alpha}  |  byzantins={num_byz}  |  agrégateur={agg}", flush=True)
+                print(f"{'='*60}", flush=True)
 
                 result = run_simulation(
                     alpha, num_byz, agg, device,
@@ -257,12 +255,12 @@ def main():
                 out_path = RESULTS_DIR / f"exp4_{tag}.json"
                 with open(out_path, "w") as f:
                     json.dump(result, f, indent=2)
-                print(f"  → Sauvegardé : {out_path}")
+                print(f"  → Sauvegardé : {out_path}", flush=True)
 
     global_path = RESULTS_DIR / "exp4_all_results.json"
     with open(global_path, "w") as f:
         json.dump(all_results, f, indent=2)
-    print(f"\n✓ Résultats complets : {global_path}")
+    print(f"\n✓ Résultats complets : {global_path}", flush=True)
 
 if __name__ == "__main__":
     main()
