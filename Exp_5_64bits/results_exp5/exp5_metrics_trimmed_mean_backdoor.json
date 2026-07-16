@@ -3,300 +3,300 @@
     "round": 1,
     "aggregator": "trimmed_mean",
     "krum_selected_id": null,
-    "temps_total_secondes": 32.2428,
-    "temps_total_ms": 32242.79,
-    "surcout_blockchain_ms": 2.1076,
-    "cpu_avant": 12.8,
-    "cpu_apres": 19.4,
-    "cpu_moyen": 16.1,
-    "ram_avant_mb": 10381.97,
-    "ram_apres_mb": 11244.21,
-    "delta_ram_mb": 862.24,
-    "comm_bytes_recus": 656316,
+    "temps_total_secondes": 140.8395,
+    "temps_total_ms": 140839.46,
+    "surcout_blockchain_ms": 20.4182,
+    "cpu_avant": 22.0,
+    "cpu_apres": 0.0,
+    "cpu_moyen": 11.0,
+    "ram_avant_mb": 299.28,
+    "ram_apres_mb": 651.24,
+    "delta_ram_mb": 351.96,
+    "comm_bytes_recus": 1312632,
     "comm_bytes_envoyes": 1312632,
-    "comm_overhead_total_bytes": 1968948,
-    "comm_overhead_total_kb": 1922.8,
-    "energie_estimee_joules": 77.8663,
-    "puissance_estimee_watts": 2.415,
+    "comm_overhead_total_bytes": 2625264,
+    "comm_overhead_total_kb": 2563.73,
+    "energie_estimee_joules": 232.3851,
+    "puissance_estimee_watts": 1.65,
     "tdp_watts_utilise": 15.0,
     "nb_clients": 3,
     "l2_deviations": {
-      "1": 1.1135,
-      "0": 1.9237,
-      "2": 1.067
+      "0": 2.385,
+      "1": 1.2562,
+      "2": 1.2481
     },
     "client_attack_types": {
+      "0": "backdoor",
       "1": "none",
-      "0": "label_flip",
       "2": "none"
     },
-    "suspect_id": 0,
-    "suspect_attack_type_reel": "label_flip",
+    "suspect_id": null,
+    "suspect_attack_type_reel": "none",
     "detection_correcte": true,
     "compression_stats": {
-      "1": {
-        "compress": true,
-        "bits": 8,
-        "bytes_received": 218772,
-        "bytes_original": 437544,
-        "compress_ratio": 2.0
-      },
       "0": {
-        "compress": true,
+        "compress": false,
         "bits": 8,
-        "bytes_received": 218772,
+        "bytes_received": 437544,
         "bytes_original": 437544,
-        "compress_ratio": 2.0
+        "compress_ratio": 1.0
+      },
+      "1": {
+        "compress": false,
+        "bits": 8,
+        "bytes_received": 437544,
+        "bytes_original": 437544,
+        "compress_ratio": 1.0
       },
       "2": {
-        "compress": true,
+        "compress": false,
         "bits": 8,
-        "bytes_received": 218772,
+        "bytes_received": 437544,
         "bytes_original": 437544,
-        "compress_ratio": 2.0
+        "compress_ratio": 1.0
       }
     },
-    "any_client_compressed": true,
-    "accuracy": 0.8266
+    "any_client_compressed": false,
+    "accuracy": 0.8703
   },
   {
     "round": 2,
     "aggregator": "trimmed_mean",
     "krum_selected_id": null,
-    "temps_total_secondes": 9.1573,
-    "temps_total_ms": 9157.32,
-    "surcout_blockchain_ms": 3.0954,
-    "cpu_avant": 18.8,
-    "cpu_apres": 16.7,
-    "cpu_moyen": 17.75,
-    "ram_avant_mb": 11242.83,
-    "ram_apres_mb": 11245.06,
-    "delta_ram_mb": 2.23,
-    "comm_bytes_recus": 656316,
+    "temps_total_secondes": 97.4886,
+    "temps_total_ms": 97488.58,
+    "surcout_blockchain_ms": 20.4044,
+    "cpu_avant": 0.0,
+    "cpu_apres": 0.0,
+    "cpu_moyen": 0.0,
+    "ram_avant_mb": 652.43,
+    "ram_apres_mb": 648.61,
+    "delta_ram_mb": -3.82,
+    "comm_bytes_recus": 1312632,
     "comm_bytes_envoyes": 1312632,
-    "comm_overhead_total_bytes": 1968948,
-    "comm_overhead_total_kb": 1922.8,
-    "energie_estimee_joules": 24.3814,
-    "puissance_estimee_watts": 2.6625,
+    "comm_overhead_total_bytes": 2625264,
+    "comm_overhead_total_kb": 2563.73,
+    "energie_estimee_joules": 0.0,
+    "puissance_estimee_watts": 0.0,
     "tdp_watts_utilise": 15.0,
     "nb_clients": 3,
     "l2_deviations": {
-      "1": 0.5892,
-      "2": 0.5651,
-      "0": 0.9517
+      "0": 1.4113,
+      "1": 0.7794,
+      "2": 0.7565
     },
     "client_attack_types": {
+      "0": "backdoor",
       "1": "none",
-      "2": "none",
-      "0": "label_flip"
+      "2": "none"
     },
-    "suspect_id": 0,
-    "suspect_attack_type_reel": "label_flip",
+    "suspect_id": null,
+    "suspect_attack_type_reel": "none",
     "detection_correcte": true,
     "compression_stats": {
-      "1": {
-        "compress": true,
+      "0": {
+        "compress": false,
         "bits": 8,
-        "bytes_received": 218772,
+        "bytes_received": 437544,
         "bytes_original": 437544,
-        "compress_ratio": 2.0
+        "compress_ratio": 1.0
+      },
+      "1": {
+        "compress": false,
+        "bits": 8,
+        "bytes_received": 437544,
+        "bytes_original": 437544,
+        "compress_ratio": 1.0
       },
       "2": {
-        "compress": true,
+        "compress": false,
         "bits": 8,
-        "bytes_received": 218772,
+        "bytes_received": 437544,
         "bytes_original": 437544,
-        "compress_ratio": 2.0
-      },
-      "0": {
-        "compress": true,
-        "bits": 8,
-        "bytes_received": 218772,
-        "bytes_original": 437544,
-        "compress_ratio": 2.0
+        "compress_ratio": 1.0
       }
     },
-    "any_client_compressed": true,
-    "accuracy": 0.8909
+    "any_client_compressed": false,
+    "accuracy": 0.9081
   },
   {
     "round": 3,
     "aggregator": "trimmed_mean",
     "krum_selected_id": null,
-    "temps_total_secondes": 9.46,
-    "temps_total_ms": 9459.97,
-    "surcout_blockchain_ms": 1.9997,
-    "cpu_avant": 22.0,
-    "cpu_apres": 19.6,
-    "cpu_moyen": 20.8,
-    "ram_avant_mb": 11245.54,
-    "ram_apres_mb": 11244.05,
-    "delta_ram_mb": -1.49,
-    "comm_bytes_recus": 656316,
+    "temps_total_secondes": 96.0771,
+    "temps_total_ms": 96077.08,
+    "surcout_blockchain_ms": 26.3821,
+    "cpu_avant": 0.0,
+    "cpu_apres": 0.0,
+    "cpu_moyen": 0.0,
+    "ram_avant_mb": 652.36,
+    "ram_apres_mb": 656.53,
+    "delta_ram_mb": 4.17,
+    "comm_bytes_recus": 1312632,
     "comm_bytes_envoyes": 1312632,
-    "comm_overhead_total_bytes": 1968948,
-    "comm_overhead_total_kb": 1922.8,
-    "energie_estimee_joules": 29.5151,
-    "puissance_estimee_watts": 3.12,
+    "comm_overhead_total_bytes": 2625264,
+    "comm_overhead_total_kb": 2563.73,
+    "energie_estimee_joules": 0.0,
+    "puissance_estimee_watts": 0.0,
     "tdp_watts_utilise": 15.0,
     "nb_clients": 3,
     "l2_deviations": {
-      "1": 0.5612,
-      "2": 0.5257,
-      "0": 0.8532
+      "0": 1.0606,
+      "1": 0.6246,
+      "2": 0.6041
     },
     "client_attack_types": {
+      "0": "backdoor",
       "1": "none",
-      "2": "none",
-      "0": "label_flip"
+      "2": "none"
     },
-    "suspect_id": 0,
-    "suspect_attack_type_reel": "label_flip",
+    "suspect_id": null,
+    "suspect_attack_type_reel": "none",
     "detection_correcte": true,
     "compression_stats": {
-      "1": {
-        "compress": true,
+      "0": {
+        "compress": false,
         "bits": 8,
-        "bytes_received": 218772,
+        "bytes_received": 437544,
         "bytes_original": 437544,
-        "compress_ratio": 2.0
+        "compress_ratio": 1.0
+      },
+      "1": {
+        "compress": false,
+        "bits": 8,
+        "bytes_received": 437544,
+        "bytes_original": 437544,
+        "compress_ratio": 1.0
       },
       "2": {
-        "compress": true,
+        "compress": false,
         "bits": 8,
-        "bytes_received": 218772,
+        "bytes_received": 437544,
         "bytes_original": 437544,
-        "compress_ratio": 2.0
-      },
-      "0": {
-        "compress": true,
-        "bits": 8,
-        "bytes_received": 218772,
-        "bytes_original": 437544,
-        "compress_ratio": 2.0
+        "compress_ratio": 1.0
       }
     },
-    "any_client_compressed": true,
-    "accuracy": 0.9111
+    "any_client_compressed": false,
+    "accuracy": 0.9214
   },
   {
     "round": 4,
     "aggregator": "trimmed_mean",
     "krum_selected_id": null,
-    "temps_total_secondes": 9.0871,
-    "temps_total_ms": 9087.08,
-    "surcout_blockchain_ms": 2.9692,
-    "cpu_avant": 19.6,
-    "cpu_apres": 20.7,
-    "cpu_moyen": 20.15,
-    "ram_avant_mb": 11232.47,
-    "ram_apres_mb": 11242.02,
-    "delta_ram_mb": 9.54,
-    "comm_bytes_recus": 656316,
+    "temps_total_secondes": 95.6819,
+    "temps_total_ms": 95681.86,
+    "surcout_blockchain_ms": 25.0992,
+    "cpu_avant": 0.0,
+    "cpu_apres": 2.4,
+    "cpu_moyen": 1.2,
+    "ram_avant_mb": 659.08,
+    "ram_apres_mb": 661.89,
+    "delta_ram_mb": 2.81,
+    "comm_bytes_recus": 1312632,
     "comm_bytes_envoyes": 1312632,
-    "comm_overhead_total_bytes": 1968948,
-    "comm_overhead_total_kb": 1922.8,
-    "energie_estimee_joules": 27.4657,
-    "puissance_estimee_watts": 3.0225,
+    "comm_overhead_total_bytes": 2625264,
+    "comm_overhead_total_kb": 2563.73,
+    "energie_estimee_joules": 17.2227,
+    "puissance_estimee_watts": 0.18,
     "tdp_watts_utilise": 15.0,
     "nb_clients": 3,
     "l2_deviations": {
-      "0": 0.7964,
-      "2": 0.5173,
-      "1": 0.5351
+      "1": 0.526,
+      "0": 0.8314,
+      "2": 0.5146
     },
     "client_attack_types": {
-      "0": "label_flip",
-      "2": "none",
-      "1": "none"
+      "1": "none",
+      "0": "backdoor",
+      "2": "none"
     },
-    "suspect_id": 0,
-    "suspect_attack_type_reel": "label_flip",
+    "suspect_id": null,
+    "suspect_attack_type_reel": "none",
     "detection_correcte": true,
     "compression_stats": {
-      "0": {
-        "compress": true,
+      "1": {
+        "compress": false,
         "bits": 8,
-        "bytes_received": 218772,
+        "bytes_received": 437544,
         "bytes_original": 437544,
-        "compress_ratio": 2.0
+        "compress_ratio": 1.0
+      },
+      "0": {
+        "compress": false,
+        "bits": 8,
+        "bytes_received": 437544,
+        "bytes_original": 437544,
+        "compress_ratio": 1.0
       },
       "2": {
-        "compress": true,
+        "compress": false,
         "bits": 8,
-        "bytes_received": 218772,
+        "bytes_received": 437544,
         "bytes_original": 437544,
-        "compress_ratio": 2.0
-      },
-      "1": {
-        "compress": true,
-        "bits": 8,
-        "bytes_received": 218772,
-        "bytes_original": 437544,
-        "compress_ratio": 2.0
+        "compress_ratio": 1.0
       }
     },
-    "any_client_compressed": true,
-    "accuracy": 0.9174
+    "any_client_compressed": false,
+    "accuracy": 0.9279
   },
   {
     "round": 5,
     "aggregator": "trimmed_mean",
     "krum_selected_id": null,
-    "temps_total_secondes": 9.2412,
-    "temps_total_ms": 9241.18,
-    "surcout_blockchain_ms": 2.088,
-    "cpu_avant": 21.2,
-    "cpu_apres": 13.9,
-    "cpu_moyen": 17.55,
-    "ram_avant_mb": 11233.71,
-    "ram_apres_mb": 11242.8,
-    "delta_ram_mb": 9.09,
-    "comm_bytes_recus": 656316,
+    "temps_total_secondes": 92.8135,
+    "temps_total_ms": 92813.53,
+    "surcout_blockchain_ms": 20.3996,
+    "cpu_avant": 2.4,
+    "cpu_apres": 0.0,
+    "cpu_moyen": 1.2,
+    "ram_avant_mb": 661.07,
+    "ram_apres_mb": 663.07,
+    "delta_ram_mb": 2.0,
+    "comm_bytes_recus": 1312632,
     "comm_bytes_envoyes": 1312632,
-    "comm_overhead_total_bytes": 1968948,
-    "comm_overhead_total_kb": 1922.8,
-    "energie_estimee_joules": 24.3274,
-    "puissance_estimee_watts": 2.6325,
+    "comm_overhead_total_bytes": 2625264,
+    "comm_overhead_total_kb": 2563.73,
+    "energie_estimee_joules": 16.7064,
+    "puissance_estimee_watts": 0.18,
     "tdp_watts_utilise": 15.0,
     "nb_clients": 3,
     "l2_deviations": {
-      "2": 0.5083,
-      "1": 0.5212,
-      "0": 0.7696
+      "1": 0.4758,
+      "0": 0.6905,
+      "2": 0.4612
     },
     "client_attack_types": {
-      "2": "none",
       "1": "none",
-      "0": "label_flip"
+      "0": "backdoor",
+      "2": "none"
     },
-    "suspect_id": 0,
-    "suspect_attack_type_reel": "label_flip",
+    "suspect_id": null,
+    "suspect_attack_type_reel": "none",
     "detection_correcte": true,
     "compression_stats": {
-      "2": {
-        "compress": true,
-        "bits": 8,
-        "bytes_received": 218772,
-        "bytes_original": 437544,
-        "compress_ratio": 2.0
-      },
       "1": {
-        "compress": true,
+        "compress": false,
         "bits": 8,
-        "bytes_received": 218772,
+        "bytes_received": 437544,
         "bytes_original": 437544,
-        "compress_ratio": 2.0
+        "compress_ratio": 1.0
       },
       "0": {
-        "compress": true,
+        "compress": false,
         "bits": 8,
-        "bytes_received": 218772,
+        "bytes_received": 437544,
         "bytes_original": 437544,
-        "compress_ratio": 2.0
+        "compress_ratio": 1.0
+      },
+      "2": {
+        "compress": false,
+        "bits": 8,
+        "bytes_received": 437544,
+        "bytes_original": 437544,
+        "compress_ratio": 1.0
       }
     },
-    "any_client_compressed": true,
-    "accuracy": 0.9273
+    "any_client_compressed": false,
+    "accuracy": 0.935
   }
 ]
