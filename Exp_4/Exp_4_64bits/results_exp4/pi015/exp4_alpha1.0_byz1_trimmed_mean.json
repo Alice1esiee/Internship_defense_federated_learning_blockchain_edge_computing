@@ -1,0 +1,71 @@
+{
+  "alpha": 1.0,
+  "num_byzantine": 1,
+  "aggregator": "trimmed_mean",
+  "num_clients": 3,
+  "num_rounds": 3,
+  "partition_stats": {
+    "client_0": {
+      "num_samples": 18372,
+      "class_distribution": [
+        2213,
+        2187,
+        2608,
+        1108,
+        1835,
+        1130,
+        4677,
+        67,
+        1797,
+        750
+      ]
+    },
+    "client_1": {
+      "num_samples": 14148,
+      "class_distribution": [
+        911,
+        714,
+        68,
+        3006,
+        2234,
+        1708,
+        202,
+        1043,
+        3089,
+        1173
+      ]
+    },
+    "client_2": {
+      "num_samples": 17480,
+      "class_distribution": [
+        1876,
+        2099,
+        2324,
+        886,
+        931,
+        2162,
+        121,
+        3890,
+        114,
+        3077
+      ]
+    }
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "accuracy": 43.67,
+      "time_sec": 2145.222
+    },
+    {
+      "round": 2,
+      "accuracy": 51.44,
+      "time_sec": 2146.077
+    },
+    {
+      "round": 3,
+      "accuracy": 55.87,
+      "time_sec": 2156.904
+    }
+  ]
+}
