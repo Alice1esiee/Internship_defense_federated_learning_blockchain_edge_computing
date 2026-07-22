@@ -1,0 +1,71 @@
+{
+  "alpha": 0.5,
+  "num_byzantine": 0,
+  "aggregator": "fedavg",
+  "num_clients": 3,
+  "num_rounds": 3,
+  "partition_stats": {
+    "client_0": {
+      "num_samples": 21589,
+      "class_distribution": [
+        3058,
+        115,
+        622,
+        2530,
+        722,
+        3677,
+        810,
+        4514,
+        3919,
+        1622
+      ]
+    },
+    "client_1": {
+      "num_samples": 13654,
+      "class_distribution": [
+        963,
+        578,
+        730,
+        2391,
+        1259,
+        1188,
+        3235,
+        467,
+        294,
+        2549
+      ]
+    },
+    "client_2": {
+      "num_samples": 14757,
+      "class_distribution": [
+        979,
+        4307,
+        3648,
+        79,
+        3019,
+        135,
+        955,
+        19,
+        787,
+        829
+      ]
+    }
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "accuracy": 51.09,
+      "time_sec": 2092.356
+    },
+    {
+      "round": 2,
+      "accuracy": 66.2,
+      "time_sec": 2220.816
+    },
+    {
+      "round": 3,
+      "accuracy": 70.08,
+      "time_sec": 2204.786
+    }
+  ]
+}

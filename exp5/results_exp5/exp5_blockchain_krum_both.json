@@ -1,0 +1,183 @@
+{
+  "blocks": [
+    {
+      "round_number": 0,
+      "contributions": [],
+      "previous_hash": "0",
+      "timestamp": 0.0,
+      "hash": "a260bdb58133ae439f722720b5b76a27ded13b0429037a686a7a9417aa749082"
+    },
+    {
+      "round_number": 1,
+      "contributions": [
+        {
+          "client_id": 0,
+          "weights_hash": "40f41fa755928c378b4475c23737034845e7ea9efacfe70e2bac291ce2802925",
+          "num_samples": 20000,
+          "l2_deviation": 2.0252,
+          "is_suspect": false
+        },
+        {
+          "client_id": 1,
+          "weights_hash": "15b20fc7908a29536e7b421d1863f61aded2f1d258abb107dba1c43ccf9d0154",
+          "num_samples": 20000,
+          "l2_deviation": 2.4919,
+          "is_suspect": true
+        },
+        {
+          "client_id": 2,
+          "weights_hash": "79793fa4b76440f5204a59f9ab8b5cd2a13fff083501a134c17d1cc1aa1c20eb",
+          "num_samples": 20000,
+          "l2_deviation": 1.7489,
+          "is_suspect": false
+        }
+      ],
+      "previous_hash": "a260bdb58133ae439f722720b5b76a27ded13b0429037a686a7a9417aa749082",
+      "timestamp": 1784730622.4255707,
+      "hash": "1181b93554ec19ff90bfb0586541db07e7600958327ee7399a6b4f89bed74463"
+    },
+    {
+      "round_number": 2,
+      "contributions": [
+        {
+          "client_id": 2,
+          "weights_hash": "a5cfa437f88b3a22b90f1ed70db20757d75905bdef1e0ba5839f1ac2977fe41f",
+          "num_samples": 20000,
+          "l2_deviation": 1.2036,
+          "is_suspect": false
+        },
+        {
+          "client_id": 1,
+          "weights_hash": "0390c91c9674f3d2c6b5ebc373fc3bbb9183fb3c0c418d0891e2bccbb277152c",
+          "num_samples": 20000,
+          "l2_deviation": 1.8288,
+          "is_suspect": true
+        },
+        {
+          "client_id": 0,
+          "weights_hash": "7fc492c1587d4b5d1c09b0a355fa80bbac795fe18a0c7f8f59e70881b3a8d3b1",
+          "num_samples": 20000,
+          "l2_deviation": 1.4895,
+          "is_suspect": false
+        }
+      ],
+      "previous_hash": "1181b93554ec19ff90bfb0586541db07e7600958327ee7399a6b4f89bed74463",
+      "timestamp": 1784730771.6255453,
+      "hash": "400c15b70bd24d63e65e9d0c7f847d7bac121737afe12ac6d5e90d4e2770edf4"
+    },
+    {
+      "round_number": 3,
+      "contributions": [
+        {
+          "client_id": 0,
+          "weights_hash": "225b628b2229b76373d931b8b3cff057104c0f4add803f395c0f4759b115abed",
+          "num_samples": 20000,
+          "l2_deviation": 1.208,
+          "is_suspect": false
+        },
+        {
+          "client_id": 1,
+          "weights_hash": "f76158aea5fad375499323348952a332a6271f2523adf0b6e7bcb1cb82c1f6b6",
+          "num_samples": 20000,
+          "l2_deviation": 1.7785,
+          "is_suspect": true
+        },
+        {
+          "client_id": 2,
+          "weights_hash": "37f2db78377733d2068733138bc6c1e7c07a544367037752390a544c69870a29",
+          "num_samples": 20000,
+          "l2_deviation": 1.0295,
+          "is_suspect": false
+        }
+      ],
+      "previous_hash": "400c15b70bd24d63e65e9d0c7f847d7bac121737afe12ac6d5e90d4e2770edf4",
+      "timestamp": 1784730920.9855812,
+      "hash": "7e5f1b3df95b7522cf3257b3703237ceb853ad8ec55872626d98c7c7ba5d0a1b"
+    },
+    {
+      "round_number": 4,
+      "contributions": [
+        {
+          "client_id": 2,
+          "weights_hash": "38d41ba5f1c3b19873398f22dfea7988f247ec957213256e0b56ed5ee81d3d78",
+          "num_samples": 20000,
+          "l2_deviation": 1.0463,
+          "is_suspect": false
+        },
+        {
+          "client_id": 1,
+          "weights_hash": "04fec93e8fd584579363ce525b5a4f6ccb136103fe4dc64250cf6cbb5b8f6e9b",
+          "num_samples": 20000,
+          "l2_deviation": 1.792,
+          "is_suspect": true
+        },
+        {
+          "client_id": 0,
+          "weights_hash": "700a1e93c43b4c52b566bca09d5b23ae5c0e5c1798cfeeb7b37bca2fedfa1368",
+          "num_samples": 20000,
+          "l2_deviation": 1.1726,
+          "is_suspect": false
+        }
+      ],
+      "previous_hash": "7e5f1b3df95b7522cf3257b3703237ceb853ad8ec55872626d98c7c7ba5d0a1b",
+      "timestamp": 1784731070.3625944,
+      "hash": "c9aad15b1b6785861d13f34ff8930d64aea51d2bb5d6845feeadca8ddf876e8d"
+    },
+    {
+      "round_number": 5,
+      "contributions": [
+        {
+          "client_id": 0,
+          "weights_hash": "977f7dd6d23ecd1f01cbd5397751e4f0d73128b0fc6929c3f67630bf96060108",
+          "num_samples": 20000,
+          "l2_deviation": 1.1839,
+          "is_suspect": false
+        },
+        {
+          "client_id": 1,
+          "weights_hash": "daa2bec7a43d54cf701d2bf2e225304f15d5490e1ee500aa92e72e9aef4bde2f",
+          "num_samples": 20000,
+          "l2_deviation": 1.8082,
+          "is_suspect": true
+        },
+        {
+          "client_id": 2,
+          "weights_hash": "144b4d399e82e42bdb7bf6422608f7b2127cce0d6aec7ee292241621003b63a3",
+          "num_samples": 20000,
+          "l2_deviation": 1.032,
+          "is_suspect": false
+        }
+      ],
+      "previous_hash": "c9aad15b1b6785861d13f34ff8930d64aea51d2bb5d6845feeadca8ddf876e8d",
+      "timestamp": 1784731219.8339248,
+      "hash": "84890c4a0ba078a3f16ecf4a144391f2e9c1fdb23a59aaa199e2d128d6449dcc"
+    }
+  ],
+  "metrics": [
+    {
+      "round": 1,
+      "overhead_seconds": 0.0222,
+      "num_clients": 3
+    },
+    {
+      "round": 2,
+      "overhead_seconds": 0.0204,
+      "num_clients": 3
+    },
+    {
+      "round": 3,
+      "overhead_seconds": 0.0204,
+      "num_clients": 3
+    },
+    {
+      "round": 4,
+      "overhead_seconds": 0.0205,
+      "num_clients": 3
+    },
+    {
+      "round": 5,
+      "overhead_seconds": 0.0203,
+      "num_clients": 3
+    }
+  ]
+}
