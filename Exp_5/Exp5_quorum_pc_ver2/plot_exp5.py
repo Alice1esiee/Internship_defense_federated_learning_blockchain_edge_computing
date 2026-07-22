@@ -226,11 +226,11 @@ def plot_blockchain_overhead():
         plt.close(fig)
         return
 
-    ax.axhline(y=2.0, color="gray", linestyle=":", alpha=0.6, label="2ms Reference")
+    ax.axhline(y=20.0, color="gray", linestyle=":", alpha=0.6, label="20ms Reference")
     ax.set_title("Blockchain Overhead per Round (ms)\nMNIST — Experiment 5 (Label-Flipping)", fontsize=12)
     ax.set_xlabel("FL Round", fontsize=11)
     ax.set_ylabel("Blockchain Overhead (ms)", fontsize=11)
-    ax.set_ylim(0, 5)
+    ax.set_ylim(0, 30)
     ax.legend(fontsize=10)
     ax.grid(True, linestyle=":", alpha=0.6)
 
