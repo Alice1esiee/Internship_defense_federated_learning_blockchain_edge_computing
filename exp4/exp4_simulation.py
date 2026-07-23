@@ -10,6 +10,9 @@ import json
 import os
 import time
 import copy
+import pickle
+import tarfile
+import urllib.request
 from pathlib import Path
 
 import numpy as np
@@ -36,15 +39,34 @@ SEED = 42
 CIFAR10_MEAN = np.array([0.4914, 0.4822, 0.4465], dtype=np.float32)
 CIFAR10_STD  = np.array([0.2470, 0.2435, 0.2616], dtype=np.float32)
 
-import pickle
 
 def load_cifar10(data_dir="./data"):
     dest = os.path.join(data_dir, "cifar-10-batches-py")
+    tar_path = os.path.join(data_dir, "cifar-10-python.tar.gz")
     print(f"[DEBUG] Dossier CIFAR-10 : {dest}", flush=True)
 
-    if not os.path.isdir(dest):
-        raise FileNotFoundError(dest)
+    # Verification et creation du dossier local de donnees
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)
 
+    # Telechargement automatique si le dossier de donnees est introuvable
+    if not os.path.isdir(dest):
+        print(f"[INFO] Dataset CIFAR-10 introuvable dans {dest}.", flush=True)
+        print("[INFO] Telechargement automatique en cours...", flush=True)
+        
+        url = "https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz"
+        urllib.request.urlretrieve(url, tar_path)
+        
+        print("[INFO] Extraction des fichiers...", flush=True)
+        with tarfile.open(tar_path, "r:gz") as tar:
+            tar.extractall(path=data_dir)
+            
+        if os.path.exists(tar_path):
+            os.remove(tar_path)
+            
+        print("[INFO] Telechargement et extraction termines avec succes !", flush=True)
+
+    # Chargement et pretraitement des batchs d'entrainement
     train_images = np.empty((50000, 3, 32, 32), dtype=np.float16)
     train_labels = np.empty(50000, dtype=np.int64)
 
@@ -61,8 +83,9 @@ def load_cifar10(data_dir="./data"):
         train_images[start:start+10000] = imgs
         train_labels[start:start+10000] = np.array(d["labels"], dtype=np.int64)
         del imgs, d
-        print(f"  [DEBUG] OK — batch {i} écrit en mémoire", flush=True)
+        print(f"  [DEBUG] OK — batch {i} ecrit en memoire", flush=True)
 
+    # Chargement du batch de test
     print("[DEBUG] Lecture test batch...", flush=True)
     with open(os.path.join(dest, "test_batch"), "rb") as f:
         d = pickle.load(f, encoding="latin1")
@@ -73,8 +96,9 @@ def load_cifar10(data_dir="./data"):
     test_labels = np.array(d["labels"], dtype=np.int64)
     del d
 
-    print(f"[DEBUG] CIFAR-10 chargé — Train : {len(train_images)} | Test : {len(test_images)}", flush=True)
+    print(f"[DEBUG] CIFAR-10 charge — Train : {len(train_images)} | Test : {len(test_images)}", flush=True)
     return train_images, train_labels, test_images, test_labels
+
 
 def dirichlet_partition(train_labels, num_clients, alpha, seed=42):
     rng = np.random.default_rng(seed)
@@ -96,6 +120,7 @@ def dirichlet_partition(train_labels, num_clients, alpha, seed=42):
         rng.shuffle(client_indices[k])
     return client_indices
 
+
 class SimpleCNN(nn.Module):
     def __init__(self, num_classes=10):
         super().__init__()
@@ -109,22 +134,27 @@ class SimpleCNN(nn.Module):
             nn.Linear(64 * 8 * 8, 256), nn.ReLU(),
             nn.Linear(256, num_classes),
         )
+
     def forward(self, x):
         return self.classifier(self.features(x).view(x.size(0), -1))
 
+
 def get_model_weights(model):
     return [p.detach().cpu().numpy() for p in model.parameters()]
+
 
 def set_model_weights(model, weights):
     with torch.no_grad():
         for param, w in zip(model.parameters(), weights):
             param.copy_(torch.tensor(w))
 
+
 def fedavg(weights_list):
     result = []
     for layers in zip(*weights_list):
         result.append(np.mean(np.stack(layers, axis=0), axis=0))
     return result
+
 
 def local_train(model, images, labels, epochs, lr, device, is_byzantine=False):
     model = copy.deepcopy(model).to(device)
@@ -148,6 +178,7 @@ def local_train(model, images, labels, epochs, lr, device, is_byzantine=False):
             del x, y
     return get_model_weights(model)
 
+
 def evaluate(model, test_images, test_labels, device):
     model.eval()
     correct = total = 0
@@ -161,6 +192,7 @@ def evaluate(model, test_images, test_labels, device):
             del x, y
     return 100.0 * correct / total
 
+
 def aggregate(weights_list, aggregator, f_byzantine):
     if aggregator == "fedavg":
         return fedavg(weights_list)
@@ -170,7 +202,8 @@ def aggregate(weights_list, aggregator, f_byzantine):
     elif aggregator == "trimmed_mean":
         return trimmed_mean(weights_list, trim=0)
     else:
-        raise ValueError(f"Agrégateur inconnu : {aggregator}")
+        raise ValueError(f"Agregateur inconnu : {aggregator}")
+
 
 def run_simulation(alpha, num_byzantine, aggregator, device,
                    train_images, train_labels, test_images, test_labels):
@@ -229,13 +262,12 @@ def run_simulation(alpha, num_byzantine, aggregator, device,
 
     return results
 
+
 def main():
-    # Ajout du bloc pour lire l'argument dans le terminal
     parser = argparse.ArgumentParser()
     parser.add_argument('--alpha', type=float, help="Valeur de l'alpha (0.1, 0.5 ou 1.0)")
     args = parser.parse_args()
 
-    # Si tu as précisé un alpha, on l'utilise, sinon on garde la liste complète par défaut
     alphas_to_run = [args.alpha] if args.alpha else ALPHAS
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -246,13 +278,12 @@ def main():
 
     all_results = []
 
-    # On utilise alphas_to_run ici au lieu de ALPHAS
     for alpha in alphas_to_run:
         for num_byz in BYZANTINE_FRACTIONS:
             for agg in AGGREGATORS:
                 tag = f"alpha{alpha}_byz{num_byz}_{agg}"
                 print(f"\n{'='*60}", flush=True)
-                print(f"  alpha={alpha}  |  byzantins={num_byz}  |  agrégateur={agg}", flush=True)
+                print(f"  alpha={alpha}  |  byzantins={num_byz}  |  agregateur={agg}", flush=True)
                 print(f"{'='*60}", flush=True)
 
                 result = run_simulation(
@@ -265,14 +296,14 @@ def main():
                 out_path = RESULTS_DIR / f"exp4_{tag}.json"
                 with open(out_path, "w") as f:
                     json.dump(result, f, indent=2)
-                print(f"  → Sauvegardé : {out_path}", flush=True)
+                print(f"  → Sauvegarde : {out_path}", flush=True)
 
-    # Modification du nom du fichier global pour savoir de quel alpha il s'agit
     nom_fichier = f"exp4_all_results_alpha{args.alpha if args.alpha else 'ALL'}.json"
     global_path = RESULTS_DIR / nom_fichier
     with open(global_path, "w") as f:
         json.dump(all_results, f, indent=2)
-    print(f"\n✓ Résultats complets : {global_path}", flush=True)
+    print(f"\n✓ Resultats complets : {global_path}", flush=True)
+
 
 if __name__ == "__main__":
     main()
