@@ -1,0 +1,3 @@
+# Exclude results folders from ZIP download
+results_exp4/ export-ignore
+results_exp5/ export-ignore
