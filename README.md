@@ -42,14 +42,16 @@ Implementation and experimental evaluation of a Federated Learning (FL) framewor
 ---
 
 ## Prerequisites & Installation
+Requirements
+Python 3.9+
 
-- Python 3.9+
-- PyTorch & Torchvision
-- Flower (flwr)
-- NumPy, Matplotlib, Psutil
+### Quick Setup
+Clone the repository and install all required packages using the requirements.txt file:
 
 ```bash
-pip install torch torchvision flwr numpy matplotlib psutil
+git clone https://github.com/Alice1esiee/Internship_defense_federated_learning_blockchain_edge_computing.git
+cd Internship_defense_federated_learning_blockchain_edge_computing
+pip install -r requirements.txt
 ```
 
 > **Datasets:** CIFAR-10 and MNIST are downloaded automatically to `data/` on first run.  
