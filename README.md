@@ -51,6 +51,23 @@ Clone the repository and install all required packages using the requirements.tx
 ```bash
 git clone https://github.com/Alice1esiee/Internship_defense_federated_learning_blockchain_edge_computing.git
 cd Internship_defense_federated_learning_blockchain_edge_computing
+```
+
+### Installation
+
+If you are : 
+
+**On PC:**
+```bash
+pip install -r requirements.txt
+```
+
+Or 
+
+**On Raspberry Pi 3 (CPU-only PyTorch):**
+
+```bash
+pip install torch torchvision --index-url [https://download.pytorch.org/whl/cpu](https://download.pytorch.org/whl/cpu)
 pip install -r requirements.txt
 ```
 
