@@ -1,5 +1,4 @@
 # Downloaded datasets
-data/
 *.tar.gz
 *.gz
 *.ubyte
