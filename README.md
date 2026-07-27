@@ -12,7 +12,7 @@ Implementation and experimental evaluation of a Federated Learning (FL) framewor
 ```text
 .
 ├── exp4/
-│   ├── data/                        # Local datasets (ignored by Git)
+│   ├── data/                        # Local datasets
 │   ├── results_exp4/                # JSON metrics and output plots
 │   ├── aggregators.py               # Defense aggregators (Krum, Trimmed Mean) + utilities
 │   ├── exp4_data.py                 # Non-IID Dirichlet data partitioning
@@ -22,7 +22,7 @@ Implementation and experimental evaluation of a Federated Learning (FL) framewor
 │   └── test_realistic.py            # Tests on real CNN weights
 │
 ├── exp5/
-│   ├── data/                        # Local datasets (ignored by Git)
+│   ├── data/                        # Local datasets
 │   ├── results_exp5/                # JSON metrics and output plots
 │   ├── aggregators.py               # Copy from Exp 4
 │   ├── blockchain.py                # Local blockchain ledger, Quorum verification, SHA256 hash-chain (colleague)
