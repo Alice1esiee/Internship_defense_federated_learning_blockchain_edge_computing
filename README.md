@@ -67,7 +67,7 @@ Or
 **On Raspberry Pi 3 (CPU-only PyTorch):**
 
 ```
-pip install torch torchvision --index-url [https://download.pytorch.org/whl/cpu](https://download.pytorch.org/whl/cpu)
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
 pip install -r requirements.txt
 ```
 
@@ -308,6 +308,8 @@ python client_0_attack_pinned.py --server_ip [SERVER_IP] --attack_type label_fli
 python client_1_attack_pinned.py --server_ip [SERVER_IP] --attack_type backdoor
 python client_2_attack_pinned.py --server_ip [SERVER_IP]
 ```
+
+> **Note:** These scripts do not support `--compress` or `--cpu_core`. For compression or CPU pinning, use `client_exp5.py` instead.
 
 ### Generate Figures
 
