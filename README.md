@@ -48,7 +48,7 @@ Python 3.9+
 ### Quick Setup
 Clone the repository and install all required packages using the requirements.txt file:
 
-```bash
+```
 git clone https://github.com/Alice1esiee/Internship_defense_federated_learning_blockchain_edge_computing.git
 cd Internship_defense_federated_learning_blockchain_edge_computing
 ```
@@ -58,7 +58,7 @@ cd Internship_defense_federated_learning_blockchain_edge_computing
 If you are : 
 
 **On PC:**
-```bash
+```
 pip install -r requirements.txt
 ```
 
@@ -66,7 +66,7 @@ Or
 
 **On Raspberry Pi 3 (CPU-only PyTorch):**
 
-```bash
+```
 pip install torch torchvision --index-url [https://download.pytorch.org/whl/cpu](https://download.pytorch.org/whl/cpu)
 pip install -r requirements.txt
 ```
@@ -83,7 +83,7 @@ pip install -r requirements.txt
 
 ### PC Simulation
 
-```bash
+```
 cd exp4
 python exp4_simulation.py
 ```
@@ -106,7 +106,7 @@ Results are saved to `results_exp4/` as JSON files — one per `(alpha, byzantin
 
 Full experiments across all α values are too slow to run in a single session on the ARM Cortex-A53. Run one α at a time using the `--alpha` argument, then collect the JSON results before plotting:
 
-```bash
+```
 # Session 1
 python exp4_simulation.py --alpha 0.1
 
@@ -121,7 +121,7 @@ Each session produces individual JSON files in `results_exp4/` (e.g. `exp4_alpha
 
 ### Generate Figures
 
-```bash
+```
 python plot_exp4.py
 ```
 
@@ -135,7 +135,7 @@ Figures saved to `results_exp4/figures/`:
 
 ### Unit Tests
 
-```bash
+```
 python test_aggregators.py
 python test_realistic.py
 ```
@@ -183,7 +183,7 @@ CPU pinning (4 cores, ARM Cortex-A53 — one process per core, no contention):
 
 For physical deployment, replace `127.0.0.1` with the server Pi's local IP:
 
-```bash
+```
 python client_exp5.py --client_id 0 --cpu_core 1 --server_ip 192.168.1.X --compress
 ```
 
@@ -191,84 +191,50 @@ python client_exp5.py --client_id 0 --cpu_core 1 --server_ip 192.168.1.X --compr
 
 Open 4 terminals in `exp5/`.
 
+> Replace `[SERVER_IP]` with `127.0.0.1` for local simulation, or with Pi 1's IP address for physical deployment.
+
 ---
 
 **Scenario A — Baseline (all honest clients)**
-
-```bash
-# Terminal 1 — Server
+```
 python server_exp5.py --aggregator fedavg --run_name baseline
 
-# Terminal 2 — Client 0
-python client_exp5.py --client_id 0 --cpu_core 1 --server_ip 127.0.0.1
-
-# Terminal 3 — Client 1
-python client_exp5.py --client_id 1 --cpu_core 2 --server_ip 127.0.0.1
-
-# Terminal 4 — Client 2
-python client_exp5.py --client_id 2 --cpu_core 3 --server_ip 127.0.0.1
-```
-
-With compression:
-
-```bash
-python client_exp5.py --client_id 0 --cpu_core 1 --server_ip 127.0.0.1 --compress
-python client_exp5.py --client_id 1 --cpu_core 2 --server_ip 127.0.0.1 --compress
-python client_exp5.py --client_id 2 --cpu_core 3 --server_ip 127.0.0.1 --compress
+python client_exp5.py --client_id 0 --cpu_core 1 --server_ip [SERVER_IP] --compress
+python client_exp5.py --client_id 1 --cpu_core 2 --server_ip [SERVER_IP] --compress
+python client_exp5.py --client_id 2 --cpu_core 3 --server_ip [SERVER_IP] --compress
 ```
 
 ---
 
-**Scenario B — Label Flipping attack + Krum defense**
-
-```bash
-# Server
+**Scenario B — Label Flipping (Client 0) + Krum defense**
+```
 python server_exp5.py --aggregator krum --run_name labelflip
 
-# Client 0 (attacker — label flip: 7 → 1)
-python client_exp5.py --client_id 0 --cpu_core 1 --server_ip 127.0.0.1 --attack_type label_flip --compress
-
-# Client 1 (honest)
-python client_exp5.py --client_id 1 --cpu_core 2 --server_ip 127.0.0.1 --compress
-
-# Client 2 (honest)
-python client_exp5.py --client_id 2 --cpu_core 3 --server_ip 127.0.0.1 --compress
+python client_exp5.py --client_id 0 --cpu_core 1 --server_ip [SERVER_IP] --attack_type label_flip --compress  # attacker: 7→1
+python client_exp5.py --client_id 1 --cpu_core 2 --server_ip [SERVER_IP] --compress
+python client_exp5.py --client_id 2 --cpu_core 3 --server_ip [SERVER_IP] --compress
 ```
 
 ---
 
-**Scenario C — Backdoor attack + Trimmed Mean defense**
-
-```bash
-# Server
+**Scenario C — Backdoor Attack (Client 0) + Trimmed Mean defense**
+```
 python server_exp5.py --aggregator trimmed_mean --run_name backdoor
 
-# Client 0 (attacker — backdoor trigger, target label 0)
-python client_exp5.py --client_id 0 --cpu_core 1 --server_ip 127.0.0.1 --attack_type backdoor --compress
-
-# Client 1 (honest)
-python client_exp5.py --client_id 1 --cpu_core 2 --server_ip 127.0.0.1 --compress
-
-# Client 2 (honest)
-python client_exp5.py --client_id 2 --cpu_core 3 --server_ip 127.0.0.1 --compress
+python client_exp5.py --client_id 0 --cpu_core 1 --server_ip [SERVER_IP] --attack_type backdoor --compress  # attacker: trigger → label 0
+python client_exp5.py --client_id 1 --cpu_core 2 --server_ip [SERVER_IP] --compress
+python client_exp5.py --client_id 2 --cpu_core 3 --server_ip [SERVER_IP] --compress
 ```
 
 ---
 
-**Scenario D — Combined attack (Label Flip + Backdoor) + Krum defense**
-
-```bash
-# Server
+**Scenario D — Combined Attack (Label Flip + Backdoor) + Krum defense**
+```
 python server_exp5.py --aggregator krum --run_name both
 
-# Client 0 (label flip)
-python client_exp5.py --client_id 0 --cpu_core 1 --server_ip 127.0.0.1 --attack_type label_flip --compress
-
-# Client 1 (backdoor)
-python client_exp5.py --client_id 1 --cpu_core 2 --server_ip 127.0.0.1 --attack_type backdoor --compress
-
-# Client 2 (honest)
-python client_exp5.py --client_id 2 --cpu_core 3 --server_ip 127.0.0.1 --compress
+python client_exp5.py --client_id 0 --cpu_core 1 --server_ip [SERVER_IP] --attack_type label_flip --compress
+python client_exp5.py --client_id 1 --cpu_core 2 --server_ip [SERVER_IP] --attack_type backdoor --compress
+python client_exp5.py --client_id 2 --cpu_core 3 --server_ip [SERVER_IP] --compress
 ```
 
 ---
@@ -293,24 +259,59 @@ python client_exp5.py --client_id 2 --cpu_core 3 --server_ip 127.0.0.1 --compres
 | `--aggregator` | fedavg, krum, trimmed_mean | fedavg | Aggregation algorithm |
 | `--run_name` | baseline, labelflip, backdoor, both | baseline | Experiment label (used in output filenames) |
 
-### Alternative: Pinned Client Scripts
+### Alternative: Pre-configured Client Scripts
 
-The pre-configured scripts `client_0_attack_pinned.py`, `client_1_attack_pinned.py`, `client_2_attack_pinned.py` are fully compatible with `server_exp5.py`. They send float32 weights (no compression); the server detects this automatically via dtype check and skips decompression.
+`client_0_attack_pinned.py`, `client_1_attack_pinned.py`, `client_2_attack_pinned.py` are the colleague's original clients, fully compatible with `server_exp5.py`. They send float32 weights (no compression); the server detects this automatically and skips decompression.
 
-```bash
-# Pi 1
-python client_0_attack_pinned.py --server_ip 127.0.0.1 --attack_type label_flip
+> Replace `[SERVER_IP]` with `127.0.0.1` for local simulation, or with Pi 1's IP address for physical deployment.
 
-# Pi 2
-python client_1_attack_pinned.py --server_ip 127.0.0.1
+---
 
-# Pi 3
-python client_2_attack_pinned.py --server_ip 127.0.0.1
+**Scenario A — Baseline (all honest clients)**
+```
+python server_exp5.py --aggregator fedavg --run_name baseline
+
+python client_0_attack_pinned.py --server_ip [SERVER_IP]
+python client_1_attack_pinned.py --server_ip [SERVER_IP]
+python client_2_attack_pinned.py --server_ip [SERVER_IP]
+```
+
+---
+
+**Scenario B — Label Flipping (Client 0) + Krum defense**
+```
+python server_exp5.py --aggregator krum --run_name labelflip
+
+python client_0_attack_pinned.py --server_ip [SERVER_IP] --attack_type label_flip  # attacker: 7→1
+python client_1_attack_pinned.py --server_ip [SERVER_IP]
+python client_2_attack_pinned.py --server_ip [SERVER_IP]
+```
+
+---
+
+**Scenario C — Backdoor Attack (Client 0) + Trimmed Mean defense**
+```
+python server_exp5.py --aggregator trimmed_mean --run_name backdoor
+
+python client_0_attack_pinned.py --server_ip [SERVER_IP] --attack_type backdoor  # attacker: trigger → label 0
+python client_1_attack_pinned.py --server_ip [SERVER_IP]
+python client_2_attack_pinned.py --server_ip [SERVER_IP]
+```
+
+---
+
+**Scenario D — Combined Attack (Label Flip + Backdoor) + Krum defense**
+```
+python server_exp5.py --aggregator krum --run_name both
+
+python client_0_attack_pinned.py --server_ip [SERVER_IP] --attack_type label_flip
+python client_1_attack_pinned.py --server_ip [SERVER_IP] --attack_type backdoor
+python client_2_attack_pinned.py --server_ip [SERVER_IP]
 ```
 
 ### Generate Figures
 
-```bash
+```
 cd exp5
 python plot_exp5.py
 ```
@@ -319,7 +320,7 @@ Figures saved to `results_exp5/figures/` (accuracy, communication overhead, exec
 
 ### Unit Tests
 
-```bash
+```
 python test_compression.py
 ```
 
