@@ -1,5 +1,6 @@
 # Exclude results folders and hidden files from ZIP download
 results_exp4/ export-ignore
 results_exp5/ export-ignore
+data/ export-ignore
 .gitignore export-ignore
 .gitattributes export-ignore
